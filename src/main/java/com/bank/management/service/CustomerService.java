@@ -4,9 +4,7 @@ import com.bank.management.entity.Customer;
 import com.bank.management.exception.CustomerNotFoundException;
 import com.bank.management.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-
 @Service
 public class CustomerService {
 

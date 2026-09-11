@@ -2,6 +2,9 @@ package com.bank.management.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Getter
 
@@ -18,9 +21,18 @@ public class Customer {
     )
     private Long id;
 
+    @NotBlank(message = "Name is required")
     private String name;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
+
+    @NotBlank(message = "Phone is required")
+    @Size(min = 10, max = 10, message = "Phone must be 10 digits")
     private String phone;
+
+    @NotBlank(message = "Address is required")
     private String address;
 
     public Customer() {

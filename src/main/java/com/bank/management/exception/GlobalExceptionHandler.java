@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.bank.management.exception.AccountNotFoundException;
+import com.bank.management.exception.TransactionNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,6 +32,22 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleCustomerNotFound(
             CustomerNotFoundException exception) {
+
+        return Map.of("message", exception.getMessage());
+    }
+
+    @ExceptionHandler(AccountNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleAccountNotFound(
+            AccountNotFoundException exception) {
+
+        return Map.of("message", exception.getMessage());
+    }
+
+    @ExceptionHandler(TransactionNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleTransactionNotFound(
+            TransactionNotFoundException exception) {
 
         return Map.of("message", exception.getMessage());
     }

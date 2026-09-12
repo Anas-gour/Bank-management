@@ -1,6 +1,7 @@
 package com.bank.management.entity;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "accounts")
@@ -19,7 +20,7 @@ public class Account {
 
     private String accountType;
 
-    private Double balance;
+    private BigDecimal balance;
 
     public Account() {
     }
@@ -46,11 +47,11 @@ public class Account {
         this.accountType = accountType;
     }
 
-    public Double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 }

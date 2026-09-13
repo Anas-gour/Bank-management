@@ -3,6 +3,7 @@ package com.bank.management.Controller;
 import com.bank.management.entity.Account;
 import com.bank.management.service.AccountService;
 import org.springframework.web.bind.annotation.*;
+import com.bank.management.dto.AccountRequest;
 
 import java.util.List;
 
@@ -17,8 +18,8 @@ public class AccountController {
     }
 
     @PostMapping
-    public Account createAccount(@RequestBody Account account) {
-        return accountService.createAccount(account);
+    public Account createAccount(@RequestBody AccountRequest request) {
+        return accountService.createAccount(request);
     }
 
     @GetMapping

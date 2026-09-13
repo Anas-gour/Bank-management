@@ -5,7 +5,9 @@ import com.bank.management.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 import com.bank.management.exception.TransactionNotFoundException;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import com.bank.management.exception.InsufficientBalanceException;
 
 import com.bank.management.dto.DepositRequest;
 import com.bank.management.entity.Account;
@@ -44,6 +46,7 @@ public class TransactionService {
                         new TransactionNotFoundException("Transaction not found"));
     }
 
+    @Transactional
     public Transaction deposit(DepositRequest request) {
 
         Account account = accountRepository.findById(request.getAccountId())
@@ -66,6 +69,7 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
+    @Transactional
     public Transaction withdraw(WithdrawRequest request) {
 
         Account account = accountRepository.findById(request.getAccountId())
@@ -73,7 +77,7 @@ public class TransactionService {
                         new AccountNotFoundException("Account not found"));
 
         if (account.getBalance().compareTo(request.getAmount()) < 0) {
-            throw new RuntimeException("Insufficient balance");
+            throw new InsufficientBalanceException("Insufficient balance");
         }
 
         BigDecimal newBalance =

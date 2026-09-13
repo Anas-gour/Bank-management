@@ -22,6 +22,10 @@ public class Account {
 
     private BigDecimal balance;
 
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
     public Account() {
     }
 
@@ -54,4 +58,12 @@ public class Account {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 }
+

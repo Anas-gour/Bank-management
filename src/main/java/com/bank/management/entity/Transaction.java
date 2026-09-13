@@ -1,9 +1,12 @@
 package com.bank.management.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
+@Getter
 @Entity
 @Table(name = "transactions")
 public class Transaction {
@@ -17,10 +20,13 @@ public class Transaction {
     )
     private Long id;
 
+    @Setter
     private String transactionType;
 
+    @Setter
     private BigDecimal amount;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
@@ -28,31 +34,4 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 }

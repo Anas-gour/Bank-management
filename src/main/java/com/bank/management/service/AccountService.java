@@ -1,9 +1,13 @@
 package com.bank.management.service;
 
+import com.bank.management.dto.AccountRequest;
 import com.bank.management.entity.Account;
-import com.bank.management.repository.AccountRepository;
-import org.springframework.stereotype.Service;
+import com.bank.management.entity.Customer;
 import com.bank.management.exception.AccountNotFoundException;
+import com.bank.management.exception.CustomerNotFoundException;
+import com.bank.management.repository.AccountRepository;
+import com.bank.management.repository.CustomerRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -11,12 +15,29 @@ import java.util.List;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final CustomerRepository customerRepository;
 
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(
+            AccountRepository accountRepository,
+            CustomerRepository customerRepository) {
+
         this.accountRepository = accountRepository;
+        this.customerRepository = customerRepository;
     }
 
-    public Account createAccount(Account account) {
+    public Account createAccount(AccountRequest request) {
+
+        Customer customer = customerRepository.findById(request.getCustomerId())
+                .orElseThrow(() ->
+                        new CustomerNotFoundException("Customer not found"));
+
+        Account account = new Account();
+
+        account.setAccountNumber(request.getAccountNumber());
+        account.setAccountType(request.getAccountType());
+        account.setBalance(request.getBalance());
+        account.setCustomer(customer);
+
         return accountRepository.save(account);
     }
 

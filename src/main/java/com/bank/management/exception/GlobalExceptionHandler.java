@@ -51,4 +51,12 @@ public class GlobalExceptionHandler {
 
         return Map.of("message", exception.getMessage());
     }
+
+    @ExceptionHandler(InsufficientBalanceException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleInsufficientBalance(
+            InsufficientBalanceException exception) {
+
+        return Map.of("message", exception.getMessage());
+    }
 }

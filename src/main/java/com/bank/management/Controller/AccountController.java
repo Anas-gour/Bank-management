@@ -5,6 +5,8 @@ import com.bank.management.service.AccountService;
 import org.springframework.web.bind.annotation.*;
 import com.bank.management.dto.AccountRequest;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 @RestController
@@ -18,7 +20,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public Account createAccount(@RequestBody AccountRequest request) {
+    public Account createAccount(@Valid @RequestBody AccountRequest request) {
         return accountService.createAccount(request);
     }
 

@@ -10,12 +10,20 @@ import java.util.List;
 import com.bank.management.exception.InsufficientBalanceException;
 
 import com.bank.management.dto.DepositRequest;
+import com.bank.management.dto.WithdrawRequest;
+import com.bank.management.dto.TransferRequest;
+import com.bank.management.dto.TransferResponse;
+import com.bank.management.dto.TransactionResponse;
+import com.bank.management.dto.DepositResponse;
+import com.bank.management.dto.WithdrawResponse;
+
+
 import com.bank.management.entity.Account;
 import com.bank.management.repository.AccountRepository;
 import com.bank.management.exception.AccountNotFoundException;
 
 import java.math.BigDecimal;
-import com.bank.management.dto.WithdrawRequest;
+
 
 @Service
 public class TransactionService {
@@ -32,22 +40,60 @@ public class TransactionService {
         this.accountRepository = accountRepository;
     }
 
-    public Transaction createTransaction(Transaction transaction) {
-        return transactionRepository.save(transaction);
+    public List<TransactionResponse> getAllTransactions() {
+
+        return transactionRepository.findAll()
+                .stream()
+                .map(transaction -> {
+
+                    if (transaction.getAccount() == null) {
+                        return new TransactionResponse(
+                                transaction.getId(),
+                                transaction.getTransactionType(),
+                                transaction.getAmount(),
+                                null,
+                                null
+                        );
+                    }
+
+                    return new TransactionResponse(
+                            transaction.getId(),
+                            transaction.getTransactionType(),
+                            transaction.getAmount(),
+                            transaction.getAccount().getId(),
+                            transaction.getAccount().getAccountNumber()
+                    );
+                })
+                .toList();
     }
 
-    public List<Transaction> getAllTransactions() {
-        return transactionRepository.findAll();
-    }
+    public TransactionResponse getTransactionById(Long id) {
 
-    public Transaction getTransactionById(Long id) {
-        return transactionRepository.findById(id)
+        Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() ->
                         new TransactionNotFoundException("Transaction not found"));
+
+        if (transaction.getAccount() == null) {
+            return new TransactionResponse(
+                    transaction.getId(),
+                    transaction.getTransactionType(),
+                    transaction.getAmount(),
+                    null,
+                    null
+            );
+        }
+
+        return new TransactionResponse(
+                transaction.getId(),
+                transaction.getTransactionType(),
+                transaction.getAmount(),
+                transaction.getAccount().getId(),
+                transaction.getAccount().getAccountNumber()
+        );
     }
 
     @Transactional
-    public Transaction deposit(DepositRequest request) {
+    public DepositResponse deposit(DepositRequest request) {
 
         Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() ->
@@ -58,20 +104,26 @@ public class TransactionService {
 
         account.setBalance(newBalance);
 
-        accountRepository.save(account);
-
         Transaction transaction = new Transaction();
 
         transaction.setTransactionType("DEPOSIT");
         transaction.setAmount(request.getAmount());
         transaction.setAccount(account);
 
-        return transactionRepository.save(transaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
+        return new DepositResponse(
+                "Deposit successful",
+                savedTransaction.getId(),
+                account.getId(),
+                account.getAccountNumber(),
+                savedTransaction.getAmount(),
+                savedTransaction.getTransactionType()
+        );
     }
 
     @Transactional
-    public Transaction withdraw(WithdrawRequest request) {
-
+    public WithdrawResponse withdraw(WithdrawRequest request) {
         Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() ->
                         new AccountNotFoundException("Account not found"));
@@ -93,6 +145,80 @@ public class TransactionService {
         transaction.setAmount(request.getAmount());
         transaction.setAccount(account);
 
-        return transactionRepository.save(transaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
+        return new WithdrawResponse(
+                "Withdrawal successful",
+                savedTransaction.getId(),
+                account.getId(),
+                account.getAccountNumber(),
+                savedTransaction.getAmount(),
+                savedTransaction.getTransactionType()
+        );
+    }
+
+    @Transactional
+    public TransferResponse transfer(TransferRequest request) {
+
+        Account fromAccount = accountRepository.findById(request.getFromAccountId())
+                .orElseThrow(() ->
+                        new AccountNotFoundException("Source account not found"));
+
+        Account toAccount = accountRepository.findById(request.getToAccountId())
+                .orElseThrow(() ->
+                        new AccountNotFoundException("Destination account not found"));
+
+        if (request.getFromAccountId().equals(request.getToAccountId())) {
+            throw new IllegalArgumentException(
+                    "Source and destination accounts cannot be the same"
+            );
+        }
+        if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
+            throw new InsufficientBalanceException("Insufficient balance");
+        }
+
+        BigDecimal newFromBalance =
+                fromAccount.getBalance().subtract(request.getAmount());
+
+        BigDecimal newToBalance =
+                toAccount.getBalance().add(request.getAmount());
+
+        fromAccount.setBalance(newFromBalance);
+        toAccount.setBalance(newToBalance);
+
+        accountRepository.save(fromAccount);
+        accountRepository.save(toAccount);
+
+        // Debit transaction
+        Transaction debitTransaction = new Transaction();
+        debitTransaction.setTransactionType("TRANSFER_DEBIT");
+        debitTransaction.setAmount(request.getAmount());
+        debitTransaction.setAccount(fromAccount);
+
+        Transaction savedDebitTransaction =
+                transactionRepository.save(debitTransaction);
+
+
+// Credit transaction
+        Transaction creditTransaction = new Transaction();
+        creditTransaction.setTransactionType("TRANSFER_CREDIT");
+        creditTransaction.setAmount(request.getAmount());
+        creditTransaction.setAccount(toAccount);
+
+        Transaction savedCreditTransaction =
+                transactionRepository.save(creditTransaction);
+
+
+// Return response
+        return new TransferResponse(
+                "Transfer successful",
+                savedDebitTransaction.getId(),
+                savedCreditTransaction.getId(),
+                fromAccount.getId(),
+                fromAccount.getAccountNumber(),
+                toAccount.getId(),
+                toAccount.getAccountNumber(),
+                request.getAmount()
+        );
     }
 }

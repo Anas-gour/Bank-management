@@ -17,7 +17,7 @@ import com.bank.management.dto.TransactionResponse;
 import com.bank.management.dto.DepositResponse;
 import com.bank.management.dto.WithdrawResponse;
 
-
+import com.bank.management.entity.AccountStatus;
 import com.bank.management.entity.Account;
 import com.bank.management.repository.AccountRepository;
 import com.bank.management.exception.AccountNotFoundException;
@@ -98,6 +98,9 @@ public class TransactionService {
         Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() ->
                         new AccountNotFoundException("Account not found"));
+        if (account.getStatus() != AccountStatus.ACTIVE) {
+            throw new IllegalStateException("Account is not active");
+        }
 
         BigDecimal newBalance =
                 account.getBalance().add(request.getAmount());
@@ -127,6 +130,10 @@ public class TransactionService {
         Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() ->
                         new AccountNotFoundException("Account not found"));
+
+        if (account.getStatus() != AccountStatus.ACTIVE) {
+            throw new IllegalStateException("Account is not active");
+        }
 
         if (account.getBalance().compareTo(request.getAmount()) < 0) {
             throw new InsufficientBalanceException("Insufficient balance");
@@ -167,6 +174,14 @@ public class TransactionService {
         Account toAccount = accountRepository.findById(request.getToAccountId())
                 .orElseThrow(() ->
                         new AccountNotFoundException("Destination account not found"));
+
+        if (fromAccount.getStatus() != AccountStatus.ACTIVE) {
+            throw new IllegalStateException("Source account is not active");
+        }
+
+        if (toAccount.getStatus() != AccountStatus.ACTIVE) {
+            throw new IllegalStateException("Destination account is not active");
+        }
 
         if (request.getFromAccountId().equals(request.getToAccountId())) {
             throw new IllegalArgumentException(

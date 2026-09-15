@@ -22,6 +22,9 @@ public class Account {
 
     private BigDecimal balance;
 
+    @Enumerated(EnumType.STRING)
+    private AccountStatus status = AccountStatus.ACTIVE;
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
@@ -64,6 +67,14 @@ public class Account {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public AccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
     }
 }
 

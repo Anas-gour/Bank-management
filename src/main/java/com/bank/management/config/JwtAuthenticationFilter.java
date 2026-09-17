@@ -219,14 +219,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
             }
 
-
-            // =================================================
-            // CONTINUE REQUEST
-            // =================================================
-
-            filterChain.doFilter(request, response);
-
-
         } catch (Exception e) {
 
             // =================================================
@@ -253,6 +245,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write(
                     "{\"message\":\"Invalid or expired token\"}"
             );
+            return;
         }
+        // =================================================
+        // CONTINUE REQUEST
+        // =================================================
+
+        filterChain.doFilter(request, response);
     }
 }

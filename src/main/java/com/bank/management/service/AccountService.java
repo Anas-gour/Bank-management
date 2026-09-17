@@ -59,7 +59,6 @@ public class AccountService {
 
         existingAccount.setAccountNumber(account.getAccountNumber());
         existingAccount.setAccountType(account.getAccountType());
-        existingAccount.setBalance(account.getBalance());
         existingAccount.setStatus(account.getStatus());
 
         return accountRepository.save(existingAccount);

@@ -67,4 +67,19 @@ public class GlobalExceptionHandler {
 
         return Map.of("message", exception.getMessage());
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleIllegalState(
+            IllegalStateException exception) {
+        return Map.of("message", exception.getMessage());
+    }
+
+    @ExceptionHandler(AccountNotActiveException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleAccountNotActive(
+            AccountNotActiveException exception) {
+
+        return Map.of("message", exception.getMessage());
+    }
 }

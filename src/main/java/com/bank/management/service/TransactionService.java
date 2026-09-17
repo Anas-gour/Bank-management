@@ -21,6 +21,7 @@ import com.bank.management.entity.AccountStatus;
 import com.bank.management.entity.Account;
 import com.bank.management.repository.AccountRepository;
 import com.bank.management.exception.AccountNotFoundException;
+import com.bank.management.exception.AccountNotActiveException;
 
 import java.math.BigDecimal;
 
@@ -99,7 +100,7 @@ public class TransactionService {
                 .orElseThrow(() ->
                         new AccountNotFoundException("Account not found"));
         if (account.getStatus() != AccountStatus.ACTIVE) {
-            throw new IllegalStateException("Account is not active");
+            throw new AccountNotActiveException("Account is not active");
         }
 
         BigDecimal newBalance =
@@ -132,7 +133,7 @@ public class TransactionService {
                         new AccountNotFoundException("Account not found"));
 
         if (account.getStatus() != AccountStatus.ACTIVE) {
-            throw new IllegalStateException("Account is not active");
+            throw new AccountNotActiveException("Account is not active");
         }
 
         if (account.getBalance().compareTo(request.getAmount()) < 0) {
@@ -176,11 +177,11 @@ public class TransactionService {
                         new AccountNotFoundException("Destination account not found"));
 
         if (fromAccount.getStatus() != AccountStatus.ACTIVE) {
-            throw new IllegalStateException("Source account is not active");
+            throw new AccountNotActiveException("Source account is not active");
         }
 
         if (toAccount.getStatus() != AccountStatus.ACTIVE) {
-            throw new IllegalStateException("Destination account is not active");
+            throw new AccountNotActiveException("Destination account is not active");
         }
 
         if (request.getFromAccountId().equals(request.getToAccountId())) {

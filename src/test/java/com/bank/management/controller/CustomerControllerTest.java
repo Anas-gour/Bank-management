@@ -1,6 +1,5 @@
 package com.bank.management.controller;
 
-import com.bank.management.Controller.CustomerController;
 import com.bank.management.entity.Customer;
 import com.bank.management.service.CustomerService;
 import com.bank.management.service.JwtService;
@@ -28,6 +27,8 @@ import org.springframework.http.MediaType;
 import static org.mockito.ArgumentMatchers.any;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import com.bank.management.controller.CustomerController;
 
 @WebMvcTest(CustomerController.class)
 public class CustomerControllerTest {

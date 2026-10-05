@@ -1,4 +1,4 @@
-package com.bank.management.Controller;
+package com.bank.management.controller;
 
 import com.bank.management.dto.RegisterRequest;
 import com.bank.management.dto.RegisterResponse;

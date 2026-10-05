@@ -1,9 +1,7 @@
-package com.bank.management.Controller;
+package com.bank.management.controller;
 
 import com.bank.management.service.TransactionService;
 import org.springframework.web.bind.annotation.*;
-
-import com.bank.management.entity.Transaction;
 
 import jakarta.validation.Valid;
 import java.util.List;

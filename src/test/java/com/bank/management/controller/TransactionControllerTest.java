@@ -1,5 +1,4 @@
 package com.bank.management.controller;
-import com.bank.management.Controller.TransactionController;
 
 import com.bank.management.service.TransactionService;
 import com.bank.management.service.JwtService;
@@ -34,6 +33,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.bank.management.controller.TransactionController;
 
 @WebMvcTest(TransactionController.class)
 class TransactionControllerTest {

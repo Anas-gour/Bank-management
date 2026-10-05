@@ -1,4 +1,4 @@
-package com.bank.management.Controller;
+package com.bank.management.controller;
 
 import com.bank.management.entity.Account;
 import com.bank.management.service.AccountService;

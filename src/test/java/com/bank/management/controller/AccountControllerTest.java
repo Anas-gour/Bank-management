@@ -1,6 +1,5 @@
 package com.bank.management.controller;
 
-import com.bank.management.Controller.AccountController;
 import com.bank.management.service.AccountService;
 
 import java.util.List;
@@ -32,6 +31,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+
+import com.bank.management.controller.AccountController;
 
 @WebMvcTest(AccountController.class)
 class AccountControllerTest {
